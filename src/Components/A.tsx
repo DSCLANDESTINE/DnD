@@ -45,7 +45,7 @@ const LineChart = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <HighchartsReact highcharts={Highcharts} options={options} />
     </div>
   );

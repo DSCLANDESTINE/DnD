@@ -44,7 +44,7 @@ const PieChart = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <HighchartsReact highcharts={Highcharts} options={options} />
     </div>
   );
