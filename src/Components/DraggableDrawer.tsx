@@ -5,9 +5,8 @@ import DragHandleIcon from "@mui/icons-material/DragHandle";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
 import { DraggableEvent, DraggableData } from "react-draggable";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import WidgetsPanel from "./WidgetsPanel";
-
 
 const CustomDrawer = styled("div")(
   ({ anchor, isOpen }: { anchor: string; isOpen: boolean }) => ({
@@ -46,7 +45,6 @@ const CustomDrawer = styled("div")(
     }),
   })
 );
-
 
 const DraggableIcon = styled("div")({
   position: "fixed",
@@ -115,50 +113,49 @@ const DraggableDrawer: React.FC = () => {
     setIsOpen(false);
   };
 
-const handleDrag = (_e: DraggableEvent, data: DraggableData) => {
-  const { x, y } = data;
-  const iconWidth = iconRef.current?.offsetWidth || 0;
-  const iconHeight = iconRef.current?.offsetHeight || 0;
 
+  const handleDrag = (_e: DraggableEvent, data: DraggableData) => {
+    const { x, y } = data;
+    const iconWidth = iconRef.current?.offsetWidth || 0;
+    const iconHeight = iconRef.current?.offsetHeight || 0;
 
-  const bottomThreshold = 50; // Adjust this value as needed
-  const bottomDistance = Math.abs(window.innerHeight - y - iconHeight);
+    const bottomThreshold = 50;
+    const bottomDistance = Math.abs(window.innerHeight - y - iconHeight);
 
-  const distances = {
-    left: Math.abs(x),
-    right: Math.abs(window.innerWidth - (x + iconWidth)),
-    top: Math.abs(y),
-    bottom: bottomDistance < bottomThreshold ? 0 : bottomDistance, // Apply threshold
+    const distances = {
+      left: Math.abs(x),
+      right: Math.abs(window.innerWidth - (x + iconWidth)),
+      top: Math.abs(y),
+      bottom: bottomDistance < bottomThreshold ? 0 : bottomDistance,
+    };
+
+    console.log("Distances:", distances);
+
+    const closestPosition = Object.keys(distances).reduce((a, b) =>
+      distances[a as keyof typeof distances] <
+      distances[b as keyof typeof distances]
+        ? a
+        : b
+    ) as Anchor;
+
+    setPreviewPosition(closestPosition);
   };
 
-  console.log("Distances:", distances);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        drawerRef.current &&
+        !drawerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
 
-  const closestPosition = Object.keys(distances).reduce((a, b) =>
-    distances[a as keyof typeof distances] <
-    distances[b as keyof typeof distances]
-      ? a
-      : b
-  ) as Anchor;
-
-  console.log("Closest Position:", closestPosition); // Debugging
-  setPreviewPosition(closestPosition);
-};
-
-useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      drawerRef.current &&
-      !drawerRef.current.contains(event.target as Node)
-    ) {
-      setIsOpen(false);
-    }
-  };
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const handleDragStop = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _e: DraggableEvent,
@@ -196,13 +193,11 @@ useEffect(() => {
             onMouseDown={handleDragStart}
           >
             <EditIcon />
-            <span>
-              Edit SideBar
-            </span>
+            <span>Edit SideBar</span>
           </button>
         </div>
         <div className="flex flex-col p-4">
-          <WidgetsPanel/>
+          <WidgetsPanel />
         </div>
       </CustomDrawer>
       {isDragging && (
@@ -211,7 +206,7 @@ useEffect(() => {
             nodeRef={iconRef as React.RefObject<HTMLElement>}
             onDrag={handleDrag}
             onStop={handleDragStop}
-            defaultPosition={{ x: 0, y: 0 }}
+            defaultPosition={{ x: 20, y: 20 }}
           >
             <DraggableIcon ref={iconRef}>✥</DraggableIcon>
           </Draggable>

@@ -1,11 +1,13 @@
-
 import { useDrop } from "react-dnd";
 import useStore from "../store/store";
 import { DragItem } from "../types/types";
 import { useRef } from "react";
 
+import { TrashIcon } from "@heroicons/react/24/outline";
+
 const Dropzone = () => {
-  const { droppedComponents, addComponent, getComponent } = useStore();
+  const { droppedComponents, addComponent, removeComponent, getComponent } =
+    useStore();
   const dropRef = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop(() => ({
@@ -20,15 +22,33 @@ const Dropzone = () => {
   return (
     <div
       ref={dropRef}
-      className="h-fit min-h-[400px] w-11/12 mx-auto border-2 border-gray-200 border-dashed p-2.5 grid grid-cols-2 gap-5"
+      className="p-4 min-h-[400px] border-2 border-dashed border-gray-300 rounded-lg"
     >
-      {droppedComponents.map((componentName, index) => {
-        const Component = getComponent(componentName);
-        if (!Component) {
-          return null;
-        }
-        return <Component key={index} />;
-      })}
+
+      <div className="grid gird-cols-1 lg:grid-cols-2 gap-5">
+        {droppedComponents.map((componentName, index) => {
+          const Component = getComponent(componentName);
+          if (!Component) {
+      
+            return null;
+          }
+
+          return (
+            <div
+              key={index}
+              className="flex flex-col gap-1 items-center justify-between p-2 bg-gray-50 rounded-lg"
+            >
+              <Component />
+              <button
+                onClick={() => removeComponent(index)}
+                className="p-1 text-red-500 hover:text-red-700"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
