@@ -7,3 +7,7 @@ export type ComponentMap = {
 export interface DragItem {
   widget: string;
 }
+
+export interface DroppedComponentDragItem {
+  index: number;
+}
